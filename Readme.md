@@ -13,10 +13,10 @@ SubtitleSystem是一个便于在游戏内添加字幕以及拓展的Unity开源�
 ![create asset](https://github.com/GhostYii/SubtitleSystem_Demo/tree/master/ReadmeImg/createasset.png)  
 也可以通过Unity顶部的Asset选项卡创建，*Asset-Create-Subtitle Asset*，如下图所示：  
 ![create asset by menu](https://github.com/GhostYii/SubtitleSystem_Demo/tree/master/ReadmeImg/createasset1.png)  
-创建完成后Unity将生成一个Asset文件，选择该文件将显示该字幕文件的简要信息，
-![brief info](https://github.com/GhostYii/SubtitleSystem_Demo/tree/master/ReadmeImg/subtitleinspector.png)
-在此界面，可以选择“从文件导入”、“导出到文件”、“打开编辑器”三项操作，其中导入导出均对.sa文件进行操作，打开编辑器可以查看本文件的详细字幕内容。编辑器分为四个部分，如下图所示
-![asset editor](https://github.com/GhostYii/SubtitleSystem_Demo/tree/master/ReadmeImg/asseteditor.png)
+创建完成后Unity将生成一个Asset文件，选择该文件将显示该字幕文件的简要信息，  
+![brief info](https://github.com/GhostYii/SubtitleSystem_Demo/tree/master/ReadmeImg/subtitleinspector.png)  
+在此界面，可以选择“从文件导入”、“导出到文件”、“打开编辑器”三项操作，其中导入导出均对.sa文件进行操作，打开编辑器可以查看本文件的详细字幕内容。编辑器分为四个部分，如下图所示  
+![asset editor](https://github.com/GhostYii/SubtitleSystem_Demo/tree/master/ReadmeImg/asseteditor.png)  
 其中红色部分代表本字幕文件一些说明信息，包括Version与Info两个字段，黄色部分代表本字幕文件所需要的所有格式信息，蓝色部分代表所有字幕内容。底部功能按钮区可以对本文件进行导入导出操作。值得注意的一点是，**在Formats(黄色区域)内的Font字段所选择的字体，应该全部存放在Resources/Font文件夹下**，否则SubtitleSystem将无法正确寻找到对应的字体而报错。Formats区域所选择的格式操作基本是属于UnityEngine.UI.Text组件的属性。  
 Subtitles区域则是整个字幕文件的主要区域，其每个字幕item的前两个属性用于选择应用于此条字幕的格式，如果选择FormatIndex，则使用Index寻找格式，格式的Index在格式名称后使用“**[]**”标注，如果选择FormatCode，则会去寻找Formats区域内第一个Code匹配的格式。同一条字幕只能对应一种格式。Position字段标明该条字幕显示在屏幕上的位置，其对应Text组件的rectTransform.localPosition属性。Content标明字幕内容，Duration标明此条字幕的持续时间。  
 其中Subtitles区域内的导入导出功能仅对此区域有效，导入可选择.txt格式或者该系统定义的.subs格式，导出仅可导出.subs格式，其中.txt格式会将txt文件内的每一行当作一条字幕导入，其余属性将使用默认属性，如果需要自定义属性，可以通过以下格式定义：
@@ -75,7 +75,7 @@ public Subtitle ShowWithTypewriter(string content, Vector3 position, int fontSiz
 //onShow(Text text, float currentProgress)
 public Subtitle ShowWithCustom(string content, Vector3 position, int fontSize, Color color, float duration, Action<Text, float> onShow, Action onComplete, string fontName = "Arial", bool playOnCreate = true);
 ```
-其各个效果预览如下：
+其各个效果预览如下：  
 ![subtitle demo](https://github.com/GhostYii/SubtitleSystem_Demo/tree/master/ReadmeImg/subtitledemo.gif)
 
 其中`ShowWithCustom`方法可以对字幕显示效果进行自定义，通过参数`onShow`与`onComplete`对字幕显示过程与停止的行为进行自定义以达到自定义效果。如上图中颜色渐变可以通过以下代码实现：
