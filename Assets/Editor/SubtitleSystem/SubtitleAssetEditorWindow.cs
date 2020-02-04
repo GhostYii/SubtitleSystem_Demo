@@ -260,6 +260,8 @@ namespace SubtitleSystem
                             continue;
 
                         SubtitleInfo tmpMsg = target.subtitles[i];
+
+                        EditorGUILayout.BeginHorizontal();
                         editorFlags[i].formatType = (FormatType)EditorGUILayout.EnumPopup("Format Type", editorFlags[i].formatType);
 
                         switch (editorFlags[i].formatType)
@@ -281,6 +283,7 @@ namespace SubtitleSystem
                             default:
                                 break;
                         }
+                        EditorGUILayout.EndHorizontal();
 
                         EditorGUILayout.BeginHorizontal();
                         positionProp.vector2Value = EditorGUILayout.Vector2Field("Position", positionProp.vector2Value);
@@ -302,6 +305,15 @@ namespace SubtitleSystem
                         var durationProp = item.FindPropertyRelative("duration");
                         durationProp.floatValue = EditorGUILayout.Slider("Duration", durationProp.floatValue, 0, editorFlags[i].sliderMaxValue);
                         editorFlags[i].sliderMaxValue = Mathf.Abs(EditorGUILayout.FloatField("Max Value", editorFlags[i].sliderMaxValue, EditorStyles.miniTextField));
+                        EditorGUILayout.EndHorizontal();
+
+                        EditorGUILayout.BeginHorizontal();
+                        var fadeIn = item.FindPropertyRelative("fadeInDuration");
+                        fadeIn.floatValue = EditorGUILayout.FloatField("Fade In Duration", fadeIn.floatValue);
+                        var fadeOut = item.FindPropertyRelative("fadeOutDuration");
+                        fadeOut.floatValue = EditorGUILayout.FloatField("Fade Out Duration", fadeOut.floatValue);
+                        var isVertical = item.FindPropertyRelative("isVertical");
+                        isVertical.boolValue = EditorGUILayout.Toggle("Vertical Subtitle", isVertical.boolValue);                       
                         EditorGUILayout.EndHorizontal();
                     }
                     EditorGUI.indentLevel--;
@@ -341,12 +353,17 @@ namespace SubtitleSystem
 
                         if (!string.IsNullOrEmpty(filePath))
                         {
-                            string[] lines = System.IO.File.ReadAllLines(filePath);
+                            string extension = System.IO.Path.GetExtension(filePath).ToLower();
+                            string[] lines = System.IO.File.ReadAllLines(filePath, Encoding.UTF8);
                             target.subtitles.Clear();
+
                             foreach (var line in lines)
                             {
                                 SubtitleInfo tmp = new SubtitleInfo();
-                                tmp.InitByFormat(line);
+                                if (extension.Equals(".subs"))
+                                    tmp.InitByFormat(line);
+                                else if (extension.Equals(".txt"))
+                                    tmp.InitByText(line);
                                 target.subtitles.Add(tmp);
                             }
                             needInitFormatType = true;

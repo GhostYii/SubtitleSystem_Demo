@@ -40,69 +40,93 @@ MonoBehaviour:
   subtitles:
   - formatIndex: 0
     formatCode: 
-    position: {x: 0, y: -170}
+    position: {x: 0, y: -165}
     point:
       x: 0
-      y: -170
+      y: -165
     content: "\u8FD9\u662F\u661F\u9732\u8C37\u7684\u9493\u9C7C\u6F14\u793A\u89C6\u9891"
     duration: 1.24
-  - formatIndex: 0
-    formatCode: 
-    position: {x: 0, y: -170}
-    point:
-      x: 0
-      y: -170
-    content: "\u9996\u5148\u6211\u4EEC\u9700\u8981\u5728\u6C34\u8FB9\u629B\u7AFF"
-    duration: 2.87
+    isVertical: 0
+    fadeInDuration: 0
+    fadeOutDuration: 0
   - formatIndex: -1
     formatCode: Code
-    position: {x: 0, y: -170}
+    position: {x: 0, y: -165}
     point:
       x: 0
-      y: -170
+      y: -165
+    content: "\u9996\u5148\u6211\u4EEC\u9700\u8981\u5728\u6C34\u8FB9\u629B\u7AFF"
+    duration: 2.87
+    isVertical: 0
+    fadeInDuration: 0
+    fadeOutDuration: 0
+  - formatIndex: 0
+    formatCode: 
+    position: {x: 0, y: -165}
+    point:
+      x: 0
+      y: -165
     content: "\u7136\u540E\u9759\u9759\u7B49\u5F85\u9C7C\u513F\u4E0A\u94A9"
     duration: 9
+    isVertical: 0
+    fadeInDuration: 0
+    fadeOutDuration: 0
   - formatIndex: 0
     formatCode: 
-    position: {x: 0, y: -170}
+    position: {x: 0, y: -165}
     point:
       x: 0
-      y: -170
+      y: -165
     content: "\u5F53\u753B\u9762\u51FA\u73B0\u63D0\u793A\u7684\u65F6\u5019\uFF0C\u5C31\u53EF\u4EE5\u6536\u6746\u4E86"
     duration: 0.98
+    isVertical: 0
+    fadeInDuration: 0
+    fadeOutDuration: 0
   - formatIndex: 0
     formatCode: 
-    position: {x: 0, y: -170}
+    position: {x: 0, y: -165}
     point:
       x: 0
-      y: -170
+      y: -165
     content: "\u9493\u9C7C\u8FC7\u7A0B\u4E2D\u9700\u8981\u5C06\u6ED1\u5757\u4E0E\u9C7C\u56FE\u6807\u91CD\u5408"
     duration: 2.98
+    isVertical: 0
+    fadeInDuration: 0
+    fadeOutDuration: 0
   - formatIndex: 0
     formatCode: 
-    position: {x: 0, y: -170}
+    position: {x: 0, y: -165}
     point:
       x: 0
-      y: -170
+      y: -165
     content: "\u6309\u4F4F\u9F20\u6807\u5DE6\u952E\u4F7F\u6ED1\u5757\u4E0A\u5347\uFF0C\u677E\u5F00\u5DE6\u952E\u4F7F\u6ED1\u5757\u4E0B\u964D"
     duration: 4.85
+    isVertical: 0
+    fadeInDuration: 0
+    fadeOutDuration: 0
   - formatIndex: 0
     formatCode: 
-    position: {x: 0, y: -170}
+    position: {x: 0, y: -165}
     point:
       x: 0
-      y: -170
+      y: -165
     content: "\u5F53\u9493\u9C7C\u7684\u8FDB\u5EA6\u6761\u6EE1\u4E86\u4E4B\u540E\uFF0C\u9C7C\u513F\u5C31\u662F\u4F60\u7684\u56CA\u4E2D\u4E4B\u7269\u4E86\uFF01"
     duration: 2.98
+    isVertical: 0
+    fadeInDuration: 0
+    fadeOutDuration: 0
   - formatIndex: 0
     formatCode: 
-    position: {x: 0, y: -170}
+    position: {x: 0, y: -165}
     point:
       x: 0
-      y: -170
+      y: -165
     content: "\u5C31\u662F\u8FD9\u4E48\u7B80\u5355"
-    duration: 4.06
-  defaultPosition: {x: 0, y: -170}
+    duration: 0
+    isVertical: 0
+    fadeInDuration: 0
+    fadeOutDuration: 4.06
+  defaultPosition: {x: 0, y: -165}
   position:
     x: 0
-    y: -170
+    y: -165

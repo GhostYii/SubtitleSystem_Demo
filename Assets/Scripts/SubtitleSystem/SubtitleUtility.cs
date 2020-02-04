@@ -8,6 +8,7 @@ namespace SubtitleSystem
     public class SubtitleUtility
     {
         //等待duration时间后执行action
+        //此方法不可暂停
         public static void WaitSecondsForSomething(Action action, float duration)
         {
             GameObject obj = new GameObject("EventBuilder");

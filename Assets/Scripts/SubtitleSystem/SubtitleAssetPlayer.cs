@@ -1,9 +1,9 @@
 ﻿//ORG: Ghostyii & MOONLIGHTGAME
-using DG.Tweening;
 using System.Collections;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.UI;
+using DG.Tweening;
 
 namespace SubtitleSystem
 {
@@ -28,27 +28,21 @@ namespace SubtitleSystem
         public UnityEvent onPause = new UnityEvent();
         public UnityEvent onStop = new UnityEvent();
 
-        private Tween currentTween = null;
-
-        private void Start()
-        {
-            if (text == null)
-                text = SubtitleManager.Instance.CreateText(Vector3.zero, 14, Color.white);
-                //text = SubtitleManager.Instance.CanvasRoot.GetComponentInChildren<Text>();
-        }
+        private Subtitle currentSubtitle = null;
 
         public void Play()
         {
             if (text == null)
                 text = SubtitleManager.Instance.CreateText(Vector3.zero, 14, Color.white);
-                //text = SubtitleManager.Instance.CanvasRoot.GetComponentInChildren<Text>();
             isPause = false;
 
             onPlay.Invoke();
-            if (currentTween == null)            
-                StartCoroutine(PlayCoroutine());            
+
+            if (currentSubtitle == null)
+                StartCoroutine(PlayCoroutine());
             else
-                currentTween.Play();
+                currentSubtitle.Play();
+
         }
 
         public void Pause()
@@ -57,10 +51,11 @@ namespace SubtitleSystem
                 return;
 
             onPause.Invoke();
-            if (currentTween != null)
+
+            if (currentSubtitle != null)
             {
                 isPause = true;
-                currentTween.Pause();
+                currentSubtitle.Pause();
             }
         }
 
@@ -72,12 +67,13 @@ namespace SubtitleSystem
             //故此处使用StopAllCouroutine而不应该使用StopCouroutine(PlayCouroutine())
             StopAllCoroutines();
 
-            if (currentTween != null)
+            if (currentSubtitle != null)
             {
-                currentTween.Kill();
+                currentSubtitle.Stop();
                 //置空使得Play逻辑正确
-                currentTween = null;
+                currentSubtitle = null;
             }
+
             text.text = string.Empty;
             currentSubtileContent = string.Empty;
             currentProgress = 0f;
@@ -88,12 +84,14 @@ namespace SubtitleSystem
         private IEnumerator PlayCoroutine()
         {
             isPlaying = true;
-            foreach (SubtitleInfo s in subtitleAsset.subtitles)
+
+            for (int i = 0; i < subtitleAsset.subtitles.Count; i++)
             {
+                SubtitleInfo s = subtitleAsset.subtitles[i];
                 if (isPause)
                     yield return new WaitUntil(() => !isPause);
 
-                currentProgress = 0f;
+                //currentProgress = 0f;
                 currentSubtileContent = s.Content;
 
                 #region Set Format        
@@ -114,26 +112,55 @@ namespace SubtitleSystem
                 text.raycastTarget = fmt.RaycastTarget;
                 #endregion
 
-                #region Set Subtitle
-                text.rectTransform.localPosition = s.GetVector2();
-                text.text = s.Content;
-                #endregion
+                #region Set Subtitle                
+                if (s.FadeInDuration > 0)
+                    currentSubtitle = new Subtitle(string.Empty, s.GetVector2(), fmt.FontData.FontSize, fmt.GetUnityColor(), fmt.FontData.Font.FontName, s.Duration + s.FadeInDuration + s.FadeOutDuration);
+                else
+                    currentSubtitle = new Subtitle(s.Content, s.GetVector2(), fmt.FontData.FontSize, fmt.GetUnityColor(), fmt.FontData.Font.FontName, s.Duration + s.FadeInDuration + s.FadeOutDuration);
 
-                if (currentTween != null && isPause)
+                currentSubtitle.Text = text;
+                currentSubtitle.destoryTextOnComplete = text == null;
+
+                currentSubtitle.SetDirect(s.IsVertical ? SubtitleDirect.Vertical : SubtitleDirect.Horizontal);
+                if (s.FadeInDuration > 0 || s.FadeOutDuration > 0)
                 {
-                    currentTween.Pause();
-                    yield return new WaitUntil(() => !isPause);
+                    currentSubtitle.OnPlay = (t, d) =>
+                    {
+                        if (s.FadeInDuration > 0)
+                        {
+                            t.color = new Color(t.color.r, t.color.g, t.color.b, 0);
+                            t.text = s.Content;
+                        }
+                        t.DOColor(new Color(t.color.r, t.color.g, t.color.b, 1), s.FadeInDuration)
+                        .OnComplete(() =>
+                        {
+                            float tmp = 0;
+                            DOTween.To(() => tmp, (x) => tmp = x, 0, s.Duration)
+                            .OnComplete(() =>
+                            {
+                                t.DOColor(new Color(t.color.r, t.color.g, t.color.b, 0), s.FadeOutDuration)
+                                .OnComplete(() => t.color = new Color(t.color.r, t.color.g, t.color.b, 1));
+                            });
+                        });
+                    };
                 }
 
-                currentTween = DOTween.To(() => currentProgress, (x) => currentProgress = x, 1f, s.Duration).SetEase(Ease.Linear);
-                yield return currentTween.WaitForCompletion();
+                currentSubtitle.OnUpdate = (t, c) => { if (!currentSubtitle.IsPause) currentProgress = c; };
+                #endregion
+
+                if (!isPause)
+                    currentSubtitle.Play();
+                else
+                    currentSubtitle.Pause();
+
+                yield return currentSubtitle.WaitForCompletion();
             }
             text.text = string.Empty;
             currentSubtileContent = string.Empty;
             currentProgress = 0f;
             isPlaying = false;
             isPause = false;
-            currentTween = null;
+            currentSubtitle = null;
         }
     }
 }

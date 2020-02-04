@@ -13,10 +13,9 @@ public class SubtitleSequenceTester : MonoBehaviour
     private SubtitleSequence sequence = new SubtitleSequence();
     private Subtitle tip;
 
-
     private void Start()
     {
-        tip = SubtitleManager.Instance.Show("按下空格键以开始显示字幕", Vector3.zero, 30, Color.white, 0);
+        tip = SubtitleManager.Instance.Show("按下空格键以开始显示字幕\n按下鼠标右键控制暂停/播放", Vector3.zero, 30, Color.white, 0);
 
         sequence.Append(SubtitleManager.Instance.Show("字幕测试，所有字幕显示时间2s", Vector3.zero, 30, Color.white, "Arial", 2f, false));
         sequence.Append(SubtitleManager.Instance.ShowVertical("竖排字幕预览", Vector3.zero, 30, Color.white, 2f, false));
@@ -25,8 +24,9 @@ public class SubtitleSequenceTester : MonoBehaviour
         sequence.Append(SubtitleManager.Instance.ShowWithShakeRotation("旋转震动字幕", Vector3.zero, 30, Color.white, 2f, 90f, true, "Arial", false));
         sequence.Append(SubtitleManager.Instance.ShowWithShakeScale("缩放震动字幕", Vector3.zero, 30, Color.white, 2f, 5f, true, "Arial", false));
         sequence.Append(SubtitleManager.Instance.ShowWithTypewriter("打字机效果预览字幕", Vector3.zero, 30, Color.white, 2f, 0.1f, "Arial", false));
-        sequence.Append(SubtitleManager.Instance.ShowWithCustom("自定义效果字幕，字体颜色渐变为红色", Vector3.zero, 30, Color.white, 2f, (t, d) => t.DOColor(Color.red, 3f), null, "Arial", false));
+        sequence.Append(SubtitleManager.Instance.ShowWithCustom("自定义效果字幕，字体颜色渐变为红色", Vector3.zero, 30, Color.white, 2f, (t, d) => t.DOColor(Color.red, 2f), null, null, "Arial", false));
         sequence.Append(new Subtitle("常驻字幕，永不消失", Vector3.zero, 30, Color.white, "Arial", 0));
+        
     }
 
     private void Update()
@@ -38,8 +38,13 @@ public class SubtitleSequenceTester : MonoBehaviour
             sequence.Start();
         }
 
+        if (startTime != 0 && Input.GetMouseButtonDown(1))
+        {
+            sequence.TogglePause();
+        }
+
         if (startTime > 0)
-            timerText.text = (Time.realtimeSinceStartup - startTime).ToString("F2");
+            timerText.text = "Sequence paused: " + sequence.IsPause.ToString() + "\n" + (Time.realtimeSinceStartup - startTime).ToString("F2");
     }
 
 }

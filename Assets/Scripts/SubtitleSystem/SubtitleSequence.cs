@@ -21,7 +21,7 @@ namespace SubtitleSystem
             scLst = new List<SubtitleCollection>();
             isPause = false;
         }
-        
+
         //尾部添加
         public void Append(Subtitle item)
         {
@@ -29,7 +29,7 @@ namespace SubtitleSystem
             c.Add(item);
             scLst.Add(c);
         }
-        
+
         //尾部添加空白间隔
         public void AppendInterval(float interval)
         {
@@ -37,19 +37,19 @@ namespace SubtitleSystem
             c.AddInterval(interval);
             scLst.Add(c);
         }
-        
+
         //插入字幕
         public void Insert(int index, Subtitle item)
         {
             scLst.Insert(index, new SubtitleCollection(item));
         }
-        
+
         //插入间隔
         public void InsertInterval(int index, float interval)
         {
             scLst.Insert(index, new SubtitleCollection(interval));
         }
-        
+
         //添加同时播放的字幕
         public void Join(Subtitle item)
         {
@@ -76,9 +76,9 @@ namespace SubtitleSystem
         public void TogglePause()
         {
             isPause = !isPause;
-           
+
             if (isPause && currentSubs != null)
-                foreach (Subtitle s in currentSubs)                
+                foreach (Subtitle s in currentSubs)
                     s.Pause();
             else if (currentSubs != null && !isPause)
                 foreach (Subtitle s in currentSubs)
@@ -113,10 +113,10 @@ namespace SubtitleSystem
             foreach (var subs in scLst)
             {
                 currentSubs = subs;
-                foreach (Subtitle sub in subs)                
+                foreach (Subtitle sub in subs)
                     sub.Play();
-                
-                yield return new WaitUntil(() => subs.IsCompleted && !isPause);
+
+                yield return new WaitUntil(() => !isPause && subs.IsCompleted);
             }
         }
     }

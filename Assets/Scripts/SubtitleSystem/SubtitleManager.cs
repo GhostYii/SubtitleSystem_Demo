@@ -28,7 +28,12 @@ namespace SubtitleSystem
         {
             //此处不判canvas是否为空
             if (canvasRoot == null)
+            {
                 canvasRoot = Instantiate<GameObject>(canvasPrefab);
+                var cs = canvasRoot.GetComponent<CanvasScaler>();
+                cs.uiScaleMode = CanvasScaler.ScaleMode.ScaleWithScreenSize;
+                cs.referenceResolution = Screen.safeArea.size;                
+            }
             DontDestroyOnLoad(canvasRoot);
         }
 
@@ -172,13 +177,20 @@ namespace SubtitleSystem
             {
                 if (fadeInDuration > 0)
                 {
-                    t.canvasRenderer.SetAlpha(0);
+                    t.color = new Color(t.color.r, t.color.g, t.color.b, 0);
                     t.text = rawContent;
-                    t.CrossFadeAlpha(1f, fadeInDuration, false);
-                    SubtitleUtility.WaitSecondsForSomething(() => SubtitleUtility.WaitSecondsForSomething(() => FadeOut(t, fadeOutDuration), duration), fadeInDuration);
                 }
-                else
-                    SubtitleUtility.WaitSecondsForSomething(() => FadeOut(sub.Text, fadeOutDuration), duration);
+                t.DOColor(new Color(t.color.r, t.color.g, t.color.b, 1), fadeInDuration)
+                .OnComplete(() =>
+                {
+                    float tmp = 0;
+                    DOTween.To(() => tmp, (x) => tmp = x, 0, duration)
+                    .OnComplete(() =>
+                    {
+                        t.DOColor(new Color(t.color.r, t.color.g, t.color.b, 0), fadeOutDuration)
+                        .OnComplete(() => t.color = new Color(t.color.r, t.color.g, t.color.b, 1));
+                    });
+                });
             };
 
             sub.OnComplete.AddListener(() => { if (!sub.Text.IsDestroyed()) Destroy(sub.Text.gameObject); });
@@ -193,7 +205,7 @@ namespace SubtitleSystem
         {
             Subtitle sub = new Subtitle(content, position, fontSize, color, fontName, duration);
             sub.OnPlay = (t, f) =>
-            {
+            {                
                 t.transform.DOShakePosition(duration, intensity, 10, 90, false, fadeOut)
                 .OnComplete(() => { if (!t.IsDestroyed()) Destroy(t.gameObject); });
             };
@@ -251,12 +263,14 @@ namespace SubtitleSystem
         }
 
         //显示自定义效果字幕
-        //onShow(Text text, float currentProgress)
-        public Subtitle ShowWithCustom(string content, Vector3 position, int fontSize, Color color, float duration, Action<Text, float> onShow, Action onComplete, string fontName = "Arial", bool playOnCreate = true)
+        //onPlay(Text text, float duration)
+        //onUpdate(Text text, float currentProgress)
+        public Subtitle ShowWithCustom(string content, Vector3 position, int fontSize, Color color, float duration,Action<Text, float> onPlay, Action<Text, float> onUpdate, Action onComplete, string fontName = "Arial", bool playOnCreate = true)
         {
             Subtitle sub = new Subtitle(content, position, fontSize, color, fontName, duration);
 
-            sub.OnPlay = onShow;
+            sub.OnPlay = onPlay;
+            sub.OnUpdate = onUpdate;
             if (onComplete != null)
                 sub.OnComplete.AddListener(() => onComplete());
             sub.OnComplete.AddListener(() => { if (!sub.Text.IsDestroyed()) Destroy(sub.Text.gameObject); });
@@ -265,7 +279,8 @@ namespace SubtitleSystem
             return sub;
         }
 
-        private void FadeOut(Text text, float duration)
+        //淡出Text文字
+        private void TextFadeOut(Text text, float duration)
         {
             text.CrossFadeAlpha(0f, duration, false);
             SubtitleUtility.WaitSecondsForSomething(() =>
@@ -276,7 +291,8 @@ namespace SubtitleSystem
 
         }
 
-        private IEnumerator TypeWriterCoroutine(Text text, string endValue, float interval)
+        //打字机效果，使用协程实现，不可暂停
+        public IEnumerator TypeWriterCoroutine(Text text, string endValue, float interval)
         {
             int count = 1;
             while (count <= endValue.Length)

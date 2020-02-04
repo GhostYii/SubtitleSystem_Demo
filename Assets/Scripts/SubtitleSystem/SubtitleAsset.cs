@@ -21,6 +21,7 @@ namespace SubtitleSystem
         private Point position;
         public Point DefaultPosition { get => position; set => position = value; }
 
+        //showDialog仅在Unity Editor下有效，build后失效
         public void LoadFromFile(string filename, bool showDialog = true)
         {
             if (!Path.GetExtension(filename).Equals(".sa"))

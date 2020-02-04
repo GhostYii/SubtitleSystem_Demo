@@ -85,6 +85,12 @@ namespace SubtitleSystem
         private string content;
         [SerializeField]
         private float duration;
+        [SerializeField]
+        private bool isVertical;
+        [SerializeField]
+        private float fadeInDuration;
+        [SerializeField]
+        private float fadeOutDuration;
 
         public int FormatIndex { get => formatIndex; set => formatIndex = value; }
         public string FormatCode { get => formatCode; set => formatCode = value; }
@@ -100,6 +106,10 @@ namespace SubtitleSystem
         }
         public string Content { get => content; set => content = value; }
         public float Duration { get => duration; set => duration = value; }
+        public bool IsVertical { get => isVertical; set => isVertical = value; }
+        public float FadeInDuration { get => fadeInDuration; set => fadeInDuration = value; }
+        public float FadeOutDuration { get => fadeOutDuration; set => fadeOutDuration = value; }
+
 
         #region 备用
         public Vector2 GetVector2()
@@ -122,7 +132,7 @@ namespace SubtitleSystem
         //用于单独保存字幕信息
         public override string ToString()
         {
-            return string.Format("\"{0}\"|\"{1}\"|\"{2}\"|\"{3}\"|\"{4}\"", content, formatIndex, formatCode, duration, position.ToString());
+            return string.Format("\"{0}\"|\"{1}\"|\"{2}\"|\"{3}\"|\"{4}\"|\"{5}\"|\"{6}\"|\"{7}\"", content, formatIndex, formatCode, duration, fadeInDuration, fadeOutDuration, isVertical, position.ToString());
         }
 
         //通过ToString生成的字符串初始化
@@ -132,7 +142,7 @@ namespace SubtitleSystem
                 return;
 
             string[] parts = format.Split('|');
-            if (parts.Length != 5)
+            if (parts.Length != 8)
                 return;
 
             content = parts[0].Substring(1, parts[0].Length - 2);
@@ -141,8 +151,13 @@ namespace SubtitleSystem
             formatCode = parts[2].Substring(1, parts[2].Length - 2);
             float tmpFloat = 2f;
             duration = float.TryParse(parts[3].Substring(1, parts[3].Length - 2), out tmpFloat) ? tmpFloat : 2f;
+            float tmpFadeIn = 0, tmpFadeOut = 0;
+            fadeInDuration = float.TryParse(parts[4].Substring(1, parts[4].Length - 2), out tmpFadeIn) ? tmpFadeIn : 0;
+            fadeOutDuration = float.TryParse(parts[5].Substring(1, parts[5].Length - 2), out tmpFadeOut) ? tmpFadeOut : 0;
 
-            string[] vectors = parts[4].Substring(1, parts[4].Length - 2).Split(',');
+            bool vtc = bool.TryParse(parts[6].Substring(1, parts[6].Length - 2), out vtc) ? vtc : false;
+
+            string[] vectors = parts[7].Substring(1, parts[7].Length - 2).Split(',');
             Position = new Point()
             {
                 X = float.Parse(vectors[0].Replace("(", string.Empty)),
