@@ -26,7 +26,7 @@ public class SubtitleSequenceTester : MonoBehaviour
         sequence.Append(SubtitleManager.Instance.ShowWithTypewriter("打字机效果预览字幕", Vector3.zero, 30, Color.white, 2f, 0.1f, "Arial", false));
         sequence.Append(SubtitleManager.Instance.ShowWithCustom("自定义效果字幕，字体颜色渐变为红色", Vector3.zero, 30, Color.white, 2f, (t, d) => t.DOColor(Color.red, 2f), null, null, "Arial", false));
         sequence.Append(new Subtitle("常驻字幕，永不消失", Vector3.zero, 30, Color.white, "Arial", 0));
-        
+
     }
 
     private void Update()

@@ -28,12 +28,15 @@ namespace SubtitleSystem
         public UnityEvent onPause = new UnityEvent();
         public UnityEvent onStop = new UnityEvent();
 
+        private bool destoryText = true;
         private Subtitle currentSubtitle = null;
 
         public void Play()
         {
+            destoryText = text == null;
             if (text == null)
                 text = SubtitleManager.Instance.CreateText(Vector3.zero, 14, Color.white);
+
             isPause = false;
 
             onPlay.Invoke();
@@ -91,6 +94,10 @@ namespace SubtitleSystem
                 if (isPause)
                     yield return new WaitUntil(() => !isPause);
 
+                if (text == null)
+                    text = SubtitleManager.Instance.CreateText(Vector3.zero, 14, Color.white);
+
+                //Debug.LogFormat("firstlog: text:{0}, color.a:{1}", text.text, text.color.a);
                 //currentProgress = 0f;
                 currentSubtileContent = s.Content;
 
@@ -112,38 +119,40 @@ namespace SubtitleSystem
                 text.raycastTarget = fmt.RaycastTarget;
                 #endregion
 
-                #region Set Subtitle                
+                #region Set Subtitle     
+
                 if (s.FadeInDuration > 0)
                     currentSubtitle = new Subtitle(string.Empty, s.GetVector2(), fmt.FontData.FontSize, fmt.GetUnityColor(), fmt.FontData.Font.FontName, s.Duration + s.FadeInDuration + s.FadeOutDuration);
                 else
                     currentSubtitle = new Subtitle(s.Content, s.GetVector2(), fmt.FontData.FontSize, fmt.GetUnityColor(), fmt.FontData.Font.FontName, s.Duration + s.FadeInDuration + s.FadeOutDuration);
 
                 currentSubtitle.Text = text;
-                currentSubtitle.destoryTextOnComplete = text == null;
+                currentSubtitle.destoryTextOnComplete = destoryText;
 
                 currentSubtitle.SetDirect(s.IsVertical ? SubtitleDirect.Vertical : SubtitleDirect.Horizontal);
-                if (s.FadeInDuration > 0 || s.FadeOutDuration > 0)
+                currentSubtitle.OnPlay = (t, d) =>
                 {
-                    currentSubtitle.OnPlay = (t, d) =>
+                    //如果Text未销毁，新的Subtitle播放的时候应该先把原先的所有Tween杀掉防止出现某些Tween未执行出预期的效果
+                    if (!destoryText)
+                        t.DOKill();
+
+                    if (s.FadeInDuration > 0)
                     {
-                        if (s.FadeInDuration > 0)
-                        {
-                            t.color = new Color(t.color.r, t.color.g, t.color.b, 0);
-                            t.text = s.Content;
-                        }
-                        t.DOColor(new Color(t.color.r, t.color.g, t.color.b, 1), s.FadeInDuration)
+                        t.color = new Color(t.color.r, t.color.g, t.color.b, 0);
+                        t.text = s.Content;
+                    }
+                    t.DOColor(new Color(t.color.r, t.color.g, t.color.b, 1), s.FadeInDuration)
+                    .OnComplete(() =>
+                    {
+                        float tmp = 0;
+                        DOTween.To(() => tmp, (x) => tmp = x, 0, s.Duration)
                         .OnComplete(() =>
                         {
-                            float tmp = 0;
-                            DOTween.To(() => tmp, (x) => tmp = x, 0, s.Duration)
-                            .OnComplete(() =>
-                            {
-                                t.DOColor(new Color(t.color.r, t.color.g, t.color.b, 0), s.FadeOutDuration)
-                                .OnComplete(() => t.color = new Color(t.color.r, t.color.g, t.color.b, 1));
-                            });
+                            t.DOColor(new Color(t.color.r, t.color.g, t.color.b, 0), s.FadeOutDuration)
+                            .OnComplete(() => t.color = new Color(t.color.r, t.color.g, t.color.b, 1));
                         });
-                    };
-                }
+                    });
+                };
 
                 currentSubtitle.OnUpdate = (t, c) => { if (!currentSubtitle.IsPause) currentProgress = c; };
                 #endregion

@@ -3,6 +3,8 @@
 1. SubtitleAsset新增fadein duration, fadeout duration与vertical选项，可创建带渐变的字幕以及垂直字幕  
 2. 修复在SubtitleAssetEditorWindow在选定Overwrite模式导入txt文本时失效的bug
 3. 修复了暂停失效的bug
+4. 修复了SubtitleAsset出现连续自定义字幕时播放出错的bug
+5. 优化了SubtitleAssetEditor的Inspector显示
 
 ---
 2020/02/02 - Version:1.0

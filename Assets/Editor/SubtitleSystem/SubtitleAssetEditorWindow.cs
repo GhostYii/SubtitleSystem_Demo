@@ -64,9 +64,14 @@ namespace SubtitleSystem
             target.info.Version = EditorGUILayout.TextField(new GUIContent("Version"), target.info.Version);
             GUILayout.Label("Information");
             target.info.Information = GUILayout.TextArea(target.info.Information, GUILayout.Height(60));
+            EditorGUILayout.Space();
             #endregion
 
-            #region Format Area            
+            #region Format Area         
+            Rect rect = EditorGUILayout.BeginHorizontal();
+            Handles.color = Color.grey;
+            Handles.DrawLine(new Vector2(rect.x - position.width, rect.y), new Vector2(rect.x + position.width, rect.y));
+            EditorGUILayout.EndHorizontal();
             GUILayout.Label("Format", new GUIStyle(GUI.skin.label) { alignment = TextAnchor.MiddleCenter, fontStyle = FontStyle.Bold });
 
             EditorGUILayout.BeginHorizontal();
@@ -100,7 +105,7 @@ namespace SubtitleSystem
             //EditorGUILayout.PropertyField(assetObj.FindProperty("formats"), new GUIContent("Formats"), true);
 
             SerializedProperty fmtSp = assetObj.FindProperty("formats");
-            
+
             //预处理数据使得初始化枚举显示正确，此遍历只需执行一遍
             if (needInitColor)
             {
@@ -108,7 +113,7 @@ namespace SubtitleSystem
                 {
                     var item = fmtSp.GetArrayElementAtIndex(i);
                     var color = item.FindPropertyRelative("color");
-                    color.colorValue = new Color(item.FindPropertyRelative("subColor").FindPropertyRelative("r").floatValue, item.FindPropertyRelative("subColor").FindPropertyRelative("g").floatValue, item.FindPropertyRelative("subColor").FindPropertyRelative("b").floatValue, item.FindPropertyRelative("subColor").FindPropertyRelative("a").floatValue);                    
+                    color.colorValue = new Color(item.FindPropertyRelative("subColor").FindPropertyRelative("r").floatValue, item.FindPropertyRelative("subColor").FindPropertyRelative("g").floatValue, item.FindPropertyRelative("subColor").FindPropertyRelative("b").floatValue, item.FindPropertyRelative("subColor").FindPropertyRelative("a").floatValue);
                 }
                 needInitColor = !needInitColor;
             }
@@ -132,7 +137,7 @@ namespace SubtitleSystem
                 }
 
                 for (int i = 0; i < fmtSp.arraySize; i++)
-                {                   
+                {
                     var item = fmtSp.GetArrayElementAtIndex(i);
                     var code = item.FindPropertyRelative("code");
 
@@ -179,22 +184,26 @@ namespace SubtitleSystem
                     EditorGUI.indentLevel--;
                 }
                 EditorGUI.indentLevel--;
-                if (target.formats.Count == 0)
+
+                float buttonWidth = position.width / 3;
+                if (GUILayout.Button("Add format", new GUIStyle(EditorStyles.miniButton) { margin = new RectOffset((int)(position.width / 2 - buttonWidth / 2), 0, 0, 0) }, GUILayout.Width(buttonWidth)))
                 {
-                    if (GUILayout.Button("Add format", EditorStyles.miniButton))
+                    target.formats.Add(new SubtitleFormat()
                     {
-                        target.formats.Add(new SubtitleFormat()
-                        {
-                            Color = new SubtitleColor() { A = 1 },
-                            FontData = new SubtitleFontData() { FontSize = 14, LineSpacing = 1, Font = new SubtitleFont() { FontName = "Arial" } }
-                        });
-                        assetObj.ApplyModifiedProperties();
-                    }
+                        Color = new SubtitleColor() { A = 1 },
+                        FontData = new SubtitleFontData() { FontSize = 14, LineSpacing = 1, Font = new SubtitleFont() { FontName = "Arial" } }
+                    });
+                    assetObj.ApplyModifiedProperties();
                 }
+
             }
+            EditorGUILayout.Space();
             #endregion
 
             #region Subtitle Area
+            rect = EditorGUILayout.BeginHorizontal();
+            Handles.DrawLine(new Vector2(rect.x - position.width, rect.y), new Vector2(rect.x + position.width, rect.y));
+            EditorGUILayout.EndHorizontal();
             GUILayout.Label("Subtitle", new GUIStyle(GUI.skin.label) { alignment = TextAnchor.MiddleCenter, fontStyle = FontStyle.Bold });
 
             SerializedProperty subSp = assetObj.FindProperty("subtitles");
@@ -313,7 +322,7 @@ namespace SubtitleSystem
                         var fadeOut = item.FindPropertyRelative("fadeOutDuration");
                         fadeOut.floatValue = EditorGUILayout.FloatField("Fade Out Duration", fadeOut.floatValue);
                         var isVertical = item.FindPropertyRelative("isVertical");
-                        isVertical.boolValue = EditorGUILayout.Toggle("Vertical Subtitle", isVertical.boolValue);                       
+                        isVertical.boolValue = EditorGUILayout.Toggle("Vertical Subtitle", isVertical.boolValue);
                         EditorGUILayout.EndHorizontal();
                     }
                     EditorGUI.indentLevel--;
@@ -421,10 +430,15 @@ namespace SubtitleSystem
                 EditorGUILayout.EndHorizontal();
 
             }
+
+            EditorGUILayout.EndScrollView();
+            EditorGUILayout.Space();
             #endregion
 
-            #region Button Area            
-            EditorGUILayout.EndScrollView();
+            #region Button Area                        
+            rect = EditorGUILayout.BeginHorizontal();            
+            Handles.DrawLine(new Vector2(rect.x - position.width, rect.y), new Vector2(rect.x + position.width, rect.y));
+            EditorGUILayout.EndHorizontal();
             EditorGUILayout.BeginHorizontal();
             if (GUILayout.Button("Load asset from file"))
             {
