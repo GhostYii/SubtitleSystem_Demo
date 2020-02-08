@@ -1326,3 +1326,6 @@ MonoBehaviour:
   onStop:
     m_PersistentCalls:
       m_Calls: []
+  onComplete:
+    m_PersistentCalls:
+      m_Calls: []

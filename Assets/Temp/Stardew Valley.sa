@@ -1,0 +1,93 @@
+info:
+  Version: 1.0
+  Information: 星露谷物语视频测试字幕
+formats:
+- Code: Code
+  FontData:
+    Font:
+      FontName: Arial
+    FontStyle: Normal
+    FontSize: 30
+    LineSpacing: 1
+    RichText: true
+    Alignment: UpperLeft
+    AlignByGeometry: false
+    HorizontalWrapMode: Wrap
+    VerticalWrapMode: Truncate
+    BestFit: false
+  Color:
+    R: 1
+    G: 1
+    B: 1
+    A: 1
+  RaycastTarget: false
+subtitles:
+- FormatIndex: 0
+  FormatCode: ''
+  Position: &o0
+    X: 0
+    Y: -165
+  Content: 这是星露谷的钓鱼演示视频
+  Duration: 1.24000001
+  IsVertical: false
+  FadeInDuration: 0
+  FadeOutDuration: 0
+- FormatIndex: -1
+  FormatCode: Code
+  Position: *o0
+  Content: 首先我们需要在水边抛竿
+  Duration: 2.86999989
+  IsVertical: false
+  FadeInDuration: 0
+  FadeOutDuration: 0
+- FormatIndex: 0
+  FormatCode: ''
+  Position: *o0
+  Content: 然后静静等待鱼儿上钩
+  Duration: 9
+  IsVertical: false
+  FadeInDuration: 0
+  FadeOutDuration: 0
+- FormatIndex: 0
+  FormatCode: ''
+  Position: *o0
+  Content: 当画面出现提示的时候，就可以收杆了
+  Duration: 0.980000019
+  IsVertical: false
+  FadeInDuration: 0
+  FadeOutDuration: 0
+- FormatIndex: 0
+  FormatCode: ''
+  Position: *o0
+  Content: 钓鱼过程中需要将滑块与鱼图标重合
+  Duration: 2.98000002
+  IsVertical: false
+  FadeInDuration: 0
+  FadeOutDuration: 0
+- FormatIndex: 0
+  FormatCode: ''
+  Position: *o0
+  Content: 按住鼠标左键使滑块上升，松开左键使滑块下降
+  Duration: 4.8499999
+  IsVertical: false
+  FadeInDuration: 0
+  FadeOutDuration: 0
+- FormatIndex: 0
+  FormatCode: ''
+  Position: *o0
+  Content: 当钓鱼的进度条满了之后，鱼儿就是你的囊中之物了！
+  Duration: 2.98000002
+  IsVertical: false
+  FadeInDuration: 0
+  FadeOutDuration: 0
+- FormatIndex: 0
+  FormatCode: ''
+  Position: *o0
+  Content: 就是这么简单
+  Duration: 0
+  IsVertical: false
+  FadeInDuration: 0
+  FadeOutDuration: 4.05999994
+DefaultPosition: *o0
+name: Stardew Valley
+hideFlags: None

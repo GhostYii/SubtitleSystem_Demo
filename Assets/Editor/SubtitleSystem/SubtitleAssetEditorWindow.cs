@@ -25,7 +25,7 @@ namespace SubtitleSystem
         {
             serializedObject = new SerializedObject(this);
             titleContent = new GUIContent("Subtitle Asset Editor");
-            needInitFormatType = true;
+            needInitFormatType = true;            
         }
 
         private void OnGUI()
@@ -247,7 +247,10 @@ namespace SubtitleSystem
                     var positionProp = item.FindPropertyRelative("position");
                     var contentProp = item.FindPropertyRelative("content");
 
-                    string itemTitle = contentProp.stringValue.Length > 35 ? string.Format("{0}...", contentProp.stringValue.Substring(0, 35)) : contentProp.stringValue;
+                    var itemLines = contentProp.stringValue.Split('\n');
+                    string itemTitle = itemLines[0].Length > 35 ? itemLines[0].Substring(0, 35) + "..." : itemLines[0];
+                    if (itemLines.Length > 1 && itemLines[0].Length < 35)
+                        itemTitle += "...";
 
                     editorFlags[i].subFoldout = EditorGUILayout.Foldout(editorFlags[i].subFoldout, string.IsNullOrEmpty(contentProp.stringValue) ? string.Format("Subtitle {0}", i) : itemTitle);
                     if (GUILayout.Button(new GUIContent("+", "Add item in this position"), GUILayout.Width(25), GUILayout.Height(15)))

@@ -26,7 +26,10 @@ namespace SubtitleSystem
 
         public UnityEvent onPlay = new UnityEvent();
         public UnityEvent onPause = new UnityEvent();
+        //onStop仅在执行Stop方法时调用
         public UnityEvent onStop = new UnityEvent();
+        //onComplete仅在正常播放完Asset完成之后调用
+        public UnityEvent onComplete = new UnityEvent();
 
         private bool destoryText = true;
         private Subtitle currentSubtitle = null;
@@ -94,11 +97,13 @@ namespace SubtitleSystem
                 if (isPause)
                     yield return new WaitUntil(() => !isPause);
 
-                if (text == null)
+                if (destoryText)
+                {
+                    if (!text.IsDestroyed())
+                        Destroy(text.gameObject);
                     text = SubtitleManager.Instance.CreateText(Vector3.zero, 14, Color.white);
+                }
 
-                //Debug.LogFormat("firstlog: text:{0}, color.a:{1}", text.text, text.color.a);
-                //currentProgress = 0f;
                 currentSubtileContent = s.Content;
 
                 #region Set Format        
@@ -164,12 +169,14 @@ namespace SubtitleSystem
 
                 yield return currentSubtitle.WaitForCompletion();
             }
+
             text.text = string.Empty;
             currentSubtileContent = string.Empty;
             currentProgress = 0f;
             isPlaying = false;
             isPause = false;
             currentSubtitle = null;
+            onComplete.Invoke();
         }
     }
 }

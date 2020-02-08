@@ -132,7 +132,7 @@ namespace SubtitleSystem
         //用于单独保存字幕信息
         public override string ToString()
         {
-            return string.Format("\"{0}\"|\"{1}\"|\"{2}\"|\"{3}\"|\"{4}\"|\"{5}\"|\"{6}\"|\"{7}\"", content, formatIndex, formatCode, duration, fadeInDuration, fadeOutDuration, isVertical, position.ToString());
+            return string.Format("\"{0}\"|\"{1}\"|\"{2}\"|\"{3}\"|\"{4}\"|\"{5}\"|\"{6}\"|\"{7}\"", content.Replace("\n", "\\n"), formatIndex, formatCode, duration, fadeInDuration, fadeOutDuration, isVertical, position.ToString());
         }
 
         //通过ToString生成的字符串初始化
@@ -145,7 +145,7 @@ namespace SubtitleSystem
             if (parts.Length != 8)
                 return;
 
-            content = parts[0].Substring(1, parts[0].Length - 2);
+            content = parts[0].Substring(1, parts[0].Length - 2).Replace("\\n", "\n");
             int tmpInt = 0;
             formatIndex = int.TryParse(parts[1].Substring(1, parts[1].Length - 2), out tmpInt) ? tmpInt : 0;
             formatCode = parts[2].Substring(1, parts[2].Length - 2);
